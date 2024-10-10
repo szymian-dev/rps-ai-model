@@ -37,3 +37,28 @@ def check_for_duplicates_in_dataset(src_dir : str) -> None:
         print('No duplicates found in dataset')
         
     print(len(files), 'files found in dataset')
+    
+def save_model(model, model_name: str, models_dir: str, history: dict = None) -> None:
+    model_path = os.path.join(models_dir, model_name + '.h5')
+    
+    counter = 1
+    unique_model_name = model_name  # Zmienna do przechowywania unikalnej nazwy modelu
+
+    while os.path.exists(model_path):
+        model_path = os.path.join(models_dir, f"{model_name}_{counter}.h5")
+        counter += 1
+    
+    model.save(model_path)
+    print(f'Model saved in {model_path}')
+    
+    if counter == 1:
+        history_path = os.path.join(models_dir, f"{model_name}_history.pkl")
+    else:
+        history_path = os.path.join(models_dir, f"{model_name}_{counter - 1}_history.pkl")
+    
+    if history is not None:
+        # Zapisujemy historię jako plik Pickle
+        with open(history_path, 'wb') as f:
+            pickle.dump(history, f)
+        print(f'History saved in {history_path}')
+       
