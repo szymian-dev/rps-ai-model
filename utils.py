@@ -1,6 +1,7 @@
 import shutil
 import os
 from sklearn.model_selection import train_test_split
+import pickle
 
 def split_dataset(classes : [str], src_dir : str, dest_dir : str, split_proportions : [float] = [0.8, 0.1, 0.1]) -> None:
     train_dir = os.path.join(dest_dir, 'train')
@@ -42,7 +43,7 @@ def save_model(model, model_name: str, models_dir: str, history: dict = None) ->
     model_path = os.path.join(models_dir, model_name + '.h5')
     
     counter = 1
-    unique_model_name = model_name  # Zmienna do przechowywania unikalnej nazwy modelu
+    unique_model_name = model_name 
 
     while os.path.exists(model_path):
         model_path = os.path.join(models_dir, f"{model_name}_{counter}.h5")
@@ -57,8 +58,17 @@ def save_model(model, model_name: str, models_dir: str, history: dict = None) ->
         history_path = os.path.join(models_dir, f"{model_name}_{counter - 1}_history.pkl")
     
     if history is not None:
-        # Zapisujemy historię jako plik Pickle
         with open(history_path, 'wb') as f:
             pickle.dump(history, f)
         print(f'History saved in {history_path}')
+        
+def load_history(model_name: str, models_dir: str) -> dict:
+    history_path = os.path.join(models_dir, model_name + '_history.pkl')
+    if not os.path.exists(history_path):
+        raise Exception(f'History file {history_path} not found')
+    
+    with open(history_path, 'rb') as f:
+        history = pickle.load(f)
+    
+    return history
        

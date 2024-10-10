@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
     
 def plot_accuracy(history):
-    acc = history['accuracy']
-    val_acc = history['val_accuracy']
+    acc = history['acc']
+    val_acc = history['val_acc']
     
     if acc is None or val_acc is None:
         raise Exception('accuracy or val_accuracy not found in history')
@@ -37,8 +37,8 @@ def plot_loss(history):
 def plot_accuracy_and_loss(history):
     loss = history['loss']
     val_loss = history['val_loss']
-    acc = history['accuracy']
-    val_acc = history['val_accuracy']
+    acc = history['acc']
+    val_acc = history['val_acc']
     
     if loss is None or val_loss is None or acc is None or val_acc is None:
         raise Exception('loss, val_loss, accuracy or val_accuracy not found in history')
