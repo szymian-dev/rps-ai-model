@@ -2,6 +2,7 @@ import shutil
 import os
 from sklearn.model_selection import train_test_split
 import pickle
+import tensorflow as tf
 
 def split_dataset(classes : [str], src_dir : str, dest_dir : str, split_proportions : [float] = [0.8, 0.1, 0.1]) -> None:
     train_dir = os.path.join(dest_dir, 'train')
@@ -71,4 +72,22 @@ def load_history(model_name: str, models_dir: str) -> dict:
         history = pickle.load(f)
     
     return history
+
+def load_model(model_name: str, models_dir: str) -> tf.keras.models.Model:
+    model_path = os.path.join(models_dir, model_name + '.h5')
+    if not os.path.exists(model_path):
+        raise Exception(f'Model file {model_path} not found')
+    
+    model = tf.keras.models.load_model(model_path)
+    return model
+
+def compile_and_train_model(create_model_func, create_model_args: dict, optimizer, loss, metrics, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, verbose: int = 1) -> dict:
+    model = create_model_func(**create_model_args)
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    return train_model(model, train_generator, val_generator, epochs, models_dir, model_name, verbose)
+
+def train_model(model, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, verbose: int = 1) -> dict:
+    history = model.fit(train_generator, validation_data=val_generator, epochs=epochs, verbose=verbose)
+    save_model(model, model_name, models_dir, history.history)
+    return history.history
        
