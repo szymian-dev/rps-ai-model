@@ -74,7 +74,7 @@ def load_history(model_name: str, models_dir: str) -> dict:
     return history
 
 def load_model(model_name: str, models_dir: str) -> tf.keras.models.Model:
-    model_path = os.path.join(models_dir, model_name + '.h5')
+    model_path = os.path.join(models_dir, model_name)
     if not os.path.exists(model_path):
         raise Exception(f'Model file {model_path} not found')
     
