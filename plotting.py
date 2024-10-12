@@ -63,4 +63,12 @@ def plot_accuracy_and_loss(history):
     axs[1].legend(['Train', 'Test'])
     plt.show()
     
-    
+def plot_images_from_generator(generator, n):
+    for i in range(n):
+        batch = next(generator)
+        images = batch[0] # 0 - images, 1 - labels
+
+        image_augmented = images[0]  # (batch_size, height, width, channels) -> (height, width, channels)
+        plt.imshow(image_augmented)
+        plt.axis('off')
+        plt.show()
