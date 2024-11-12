@@ -111,7 +111,7 @@ def plot_images_from_generator(generator, n):
         plt.show()
         
         
-def plot_grid_from_generator(generator, rows, cols, cmap='rgb'):
+def plot_grid_from_generator(generator, rows, cols, cmap='viridis'):
     fig, axes = plt.subplots(rows, cols, figsize=(cols * 2, rows * 2))  
     axes = axes.flatten()  
 
