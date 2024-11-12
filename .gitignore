@@ -1,5 +1,6 @@
 original_data/
 dataset/
+dataset_grayscale/
 .pyc
 
 # Byte-compiled / optimized / DLL files

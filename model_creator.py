@@ -38,3 +38,14 @@ def build_regularized_cnn_l2_0001(input_shape=(224, 224, 3), num_classes=3):
     model.add(layers.BatchNormalization())
     model.add(layers.Dense(num_classes, activation='softmax'))
     return model
+
+def build_ResNet50(input_shape=(224, 224, 3), num_classes=3):
+    base_model = tf.keras.applications.ResNet50(include_top=False, weights='imagenet', input_shape=input_shape)
+    base_model.trainable = False
+    model = models.Sequential()
+    model.add(base_model)
+    model.add(layers.Flatten())
+    model.add(layers.Dense(256, activation='relu'))
+    model.add(layers.Dense(num_classes, activation='softmax'))
+    
+    return model

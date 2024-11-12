@@ -111,7 +111,7 @@ def plot_images_from_generator(generator, n):
         plt.show()
         
         
-def plot_grid_from_generator(generator, rows, cols):
+def plot_grid_from_generator(generator, rows, cols, cmap='rgb'):
     fig, axes = plt.subplots(rows, cols, figsize=(cols * 2, rows * 2))  
     axes = axes.flatten()  
 
@@ -120,7 +120,7 @@ def plot_grid_from_generator(generator, rows, cols):
         images = batch[0]  
 
         image_augmented = images[0] 
-        axes[i].imshow(image_augmented)
+        axes[i].imshow(image_augmented, cmap=cmap)
         axes[i].axis('off')  
 
     plt.tight_layout() 
