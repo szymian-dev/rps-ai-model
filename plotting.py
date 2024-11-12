@@ -72,3 +72,19 @@ def plot_images_from_generator(generator, n):
         plt.imshow(image_augmented)
         plt.axis('off')
         plt.show()
+        
+        
+def plot_grid_from_generator(generator, rows, cols):
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 2, rows * 2))  
+    axes = axes.flatten()  
+
+    for i in range(rows * cols):
+        batch = next(generator)
+        images = batch[0]  
+
+        image_augmented = images[0] 
+        axes[i].imshow(image_augmented)
+        axes[i].axis('off')  
+
+    plt.tight_layout() 
+    plt.show()
