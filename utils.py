@@ -81,13 +81,18 @@ def load_model(model_name: str, models_dir: str) -> tf.keras.models.Model:
     model = tf.keras.models.load_model(model_path)
     return model
 
-def compile_and_train_model(create_model_func, create_model_args: dict, optimizer, loss, metrics, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, verbose: int = 1) -> dict:
+def compile_and_train_model(create_model_func, create_model_args: dict, optimizer, loss, metrics, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, callbacks=[], verbose: int = 1) -> dict:
     model = create_model_func(**create_model_args)
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-    return train_model(model, train_generator, val_generator, epochs, models_dir, model_name, verbose)
+    return train_model(model, train_generator, val_generator, epochs, models_dir, model_name, callbacks, verbose)
 
-def train_model(model, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, verbose: int = 1) -> dict:
-    history = model.fit(train_generator, validation_data=val_generator, epochs=epochs, verbose=verbose)
+def train_model(model, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, callbacks=[], verbose: int = 1) -> dict:
+    history = model.fit(
+        train_generator, 
+        validation_data=val_generator, 
+        epochs=epochs,
+        callbacks=callbacks, 
+        verbose=verbose)
     save_model(model, model_name, models_dir, history.history)
     return history.history
        
