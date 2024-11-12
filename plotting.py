@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pandas as pd
     
 def plot_accuracy(history):
     acc = history['acc']
@@ -14,7 +15,7 @@ def plot_accuracy(history):
     plt.title('Training and Validation Accuracy')
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
-    plt.legend(['Train', 'Test'])
+    plt.legend(['Train', 'Validation'])
     plt.show()
     
 def plot_loss(history):
@@ -31,7 +32,7 @@ def plot_loss(history):
     plt.title('Training and Validation Loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.legend(['Train', 'Test'])
+    plt.legend(['Train', 'Validation'])
     plt.show()
 
 def plot_accuracy_and_loss(history):
@@ -53,14 +54,50 @@ def plot_accuracy_and_loss(history):
     axs[0].set_title('Training and Validation Accuracy')
     axs[0].set_xlabel('Epochs')
     axs[0].set_ylabel('Accuracy')
-    axs[0].legend(['Train', 'Test'])
+    axs[0].legend(['Train', 'Validation'])
     
     axs[1].plot(epochs, loss, 'ro--', label='Training loss')
     axs[1].plot(epochs, val_loss, 'r-', label='Validation loss')
     axs[1].set_title('Training and Validation Loss')
     axs[1].set_xlabel('Epochs')
     axs[1].set_ylabel('Loss')
-    axs[1].legend(['Train', 'Test'])
+    axs[1].legend(['Train', 'Validation'])
+    plt.show()
+    
+def plot_history_csv(csv_file):
+    history = pd.read_csv(csv_file)
+    
+    required_columns = ['accuracy', 'val_accuracy', 'loss', 'val_loss']
+    for col in required_columns:
+        if col not in history.columns:
+            raise Exception(f"Column '{col}' not found in history")
+
+    loss = history['loss']
+    val_loss = history['val_loss']
+    acc = history['accuracy']
+    val_acc = history['val_accuracy']
+    
+    assert len(loss) == len(acc) == len(val_loss) == len(val_acc)
+
+    plt.clf()
+    epochs = range(len(loss))
+    fig, axs = plt.subplots(2, 1, figsize=(14, 8))
+
+    axs[0].plot(epochs, acc, 'bo--', label='Training accuracy')
+    axs[0].plot(epochs, val_acc, 'b-', label='Validation accuracy')
+    axs[0].set_title('Training and Validation Accuracy')
+    axs[0].set_xlabel('Epochs')
+    axs[0].set_ylabel('Accuracy')
+    axs[0].legend()
+
+    axs[1].plot(epochs, loss, 'ro--', label='Training loss')
+    axs[1].plot(epochs, val_loss, 'r-', label='Validation loss')
+    axs[1].set_title('Training and Validation Loss')
+    axs[1].set_xlabel('Epochs')
+    axs[1].set_ylabel('Loss')
+    axs[1].legend()
+
+    plt.tight_layout()
     plt.show()
     
 def plot_images_from_generator(generator, n):
