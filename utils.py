@@ -3,6 +3,7 @@ import os
 from sklearn.model_selection import train_test_split
 import pickle
 import tensorflow as tf
+import pandas as pd
 
 def split_dataset(classes : [str], src_dir : str, dest_dir : str, split_proportions : [float] = [0.8, 0.1, 0.1]) -> None:
     train_dir = os.path.join(dest_dir, 'train')
@@ -41,45 +42,27 @@ def check_for_duplicates_in_dataset(src_dir : str) -> None:
     print(len(files), 'files found in dataset')
     
 def save_model(model, model_name: str, models_dir: str, history: dict = None) -> None:
-    model_path = os.path.join(models_dir, model_name + '.h5')
-    
+    model_path = os.path.join(models_dir, model_name + '.keras')
     counter = 1
     unique_model_name = model_name 
 
     while os.path.exists(model_path):
-        model_path = os.path.join(models_dir, f"{model_name}_{counter}.h5")
+        model_path = os.path.join(models_dir, f"{model_name}_{counter}.keras")
         counter += 1
     
     model.save(model_path)
     print(f'Model saved in {model_path}')
     
     if counter == 1:
-        history_path = os.path.join(models_dir, f"{model_name}_history.pkl")
+        history_path = os.path.join(models_dir, f"{model_name}_history.csv")
     else:
-        history_path = os.path.join(models_dir, f"{model_name}_{counter - 1}_history.pkl")
+        history_path = os.path.join(models_dir, f"{model_name}_{counter - 1}_history.csv")
     
     if history is not None:
-        with open(history_path, 'wb') as f:
-            pickle.dump(history, f)
+        history_df = pd.DataFrame(history)
+        history_df.to_csv(history_path, index=False)
         print(f'History saved in {history_path}')
         
-def load_history(model_name: str, models_dir: str) -> dict:
-    history_path = os.path.join(models_dir, model_name + '_history.pkl')
-    if not os.path.exists(history_path):
-        raise Exception(f'History file {history_path} not found')
-    
-    with open(history_path, 'rb') as f:
-        history = pickle.load(f)
-    
-    return history
-
-def load_model(model_name: str, models_dir: str) -> tf.keras.models.Model:
-    model_path = os.path.join(models_dir, model_name)
-    if not os.path.exists(model_path):
-        raise Exception(f'Model file {model_path} not found')
-    
-    model = tf.keras.models.load_model(model_path)
-    return model
 
 def compile_and_train_model(create_model_func, create_model_args: dict, optimizer, loss, metrics, train_generator, val_generator, epochs: int, models_dir: str, model_name: str, callbacks=[], verbose: int = 1) -> dict:
     model = create_model_func(**create_model_args)
