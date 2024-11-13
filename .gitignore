@@ -2,6 +2,9 @@ original_data/
 dataset/
 dataset_grayscale/
 .pyc
+models/
+models_grayscale/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
