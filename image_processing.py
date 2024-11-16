@@ -4,10 +4,33 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import cv2
 
-def prepare_image_for_prediction(img_path, target_size=(224, 224), grayscale=True):
-    assert os.path.exists(img_path), f'Image file not found at path: {img_path}'
-    img = Image.open(img_path)
+import mediapipe as mp
+
+mp_hands = mp.solutions.hands
+
+def process_image(img_path):
+    hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.2)
+    image = cv2.imread(img_path)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = hands.process(image_rgb)
     
+    if not results.multi_hand_landmarks:
+        return None
+    
+    mask = np.zeros(image.shape[:2], dtype=np.uint8)
+    for hand_landmarks in results.multi_hand_landmarks:
+        points = [(int(lm.x * image.shape[1]), int(lm.y * image.shape[0])) for lm in hand_landmarks.landmark]
+        cv2.fillPoly(mask, [np.array(points, dtype=np.int32)], 255)
+    
+    resized_mask = cv2.resize(mask, (224, 224))
+    normalized_mask = resized_mask / 255.0
+    
+    prepared_image = np.expand_dims(normalized_mask, axis=-1)  # Add channel dimension (224, 224, 1)
+    prepared_image = np.expand_dims(prepared_image, axis=0)    # Add batch dimension (1, 224, 224, 1)
+    
+    return prepared_image
+
+def prepare_image_for_prediction(img, target_size=(224, 224), grayscale=True):
     if img.height > img.width:
         img = img.rotate(90, expand=True)
     

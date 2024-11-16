@@ -38,4 +38,4 @@ def generate_masks(image_dir, output_mask_dir):
         mask_filename = os.path.join(output_mask_dir, filename)
         cv2.imwrite(mask_filename, mask)
 
-generate_masks("predict_images", "predict_masks")
+generate_masks("src_data/rock", "predict_masks_rock")
