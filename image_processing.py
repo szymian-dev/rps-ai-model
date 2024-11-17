@@ -64,7 +64,7 @@ def convert_images_to_grayscale(dataset_dir, splits, classes):
                 raise Exception(f"Directory not found: {class_dir}")
 
             for filename in os.listdir(class_dir):
-                if filename.endswith('.jpg') or filename.endswith('.png'):
+                if filename.endswith(('.jpg', '.png', '.jpeg')):
                     img_path = os.path.join(class_dir, filename)
   
                     img = Image.open(img_path)
