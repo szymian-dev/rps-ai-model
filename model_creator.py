@@ -100,3 +100,46 @@ def build_cnn_mediapipe(input_shape=(64, 64, 1), num_classes=3):
     
     return model
     
+    
+# U-Net model
+
+def double_conv_layer(x, filters, kernel_size=(3, 3), activation='relu', padding='same', kernel_initializer='he_normal', batch_norm=False):
+    x = layers.Conv2D(filters, kernel_size, activation=activation, padding=padding, kernel_initializer=kernel_initializer)(x)
+    x = layers.Conv2D(filters, kernel_size, activation=activation, padding=padding, kernel_initializer=kernel_initializer)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    return x
+
+def downsample_block(x, filters, kernel_size=(3, 3), strides=(2, 2), activation='relu', padding='same', kernel_initializer='he_normal', batch_norm=False, dropout=0.0):
+    x = double_conv_layer(x, filters, kernel_size, activation, padding, kernel_initializer, batch_norm)
+    d = layers.MaxPooling2D(strides)(x)
+    if dropout > 0.0:
+        d = layers.Dropout(dropout)(d)
+    return x, d
+
+def upsampling_block(x, skip, filters, kernel_size=(3, 3), strides=(2, 2), activation='relu', padding='same', kernel_initializer='he_normal', batch_norm=False, dropout=0.0):
+    x = layers.Conv2DTranspose(filters, kernel_size, strides=strides, activation=activation, padding=padding, kernel_initializer=kernel_initializer)(x)
+    x = layers.concatenate([x, skip])
+    x = double_conv_layer(x, filters, kernel_size, activation, padding, kernel_initializer, batch_norm)
+    if dropout > 0.0:
+        x = layers.Dropout(dropout)(x)
+    return x
+
+def build_unet_model(input_shape=(224, 224, 3)):
+    inputs = layers.Input(input_shape)
+    
+    s1, d1 = downsample_block(inputs, 16, dropout=0.1)
+    s2, d2 = downsample_block(d1, 32, batch_norm=True)
+    s3, d3 = downsample_block(d2, 64, dropout=0.1)
+    s4, d4 = downsample_block(d3, 128, batch_norm=True)
+    
+    bottleneck = double_conv_layer(d4, 256)
+    
+    u4 = upsampling_block(bottleneck, s4, 128, batch_norm=True)
+    u3 = upsampling_block(u4, s3, 64, dropout=0.1)
+    u2 = upsampling_block(u3, s2, 32, batch_norm=True)
+    u1 = upsampling_block(u2, s1, 16, dropout=0.1)
+    
+    outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(u1)
+    
+    return models.Model(inputs=[inputs], outputs=[outputs])
