@@ -4,6 +4,7 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import cv2
 
+# RGB and Grayscale images
 def prepare_image_for_prediction(img_path, target_size=(224, 224), grayscale=True):
     assert os.path.exists(img_path), f'Image file not found at path: {img_path}'
     img = Image.open(img_path)
@@ -15,7 +16,7 @@ def prepare_image_for_prediction(img_path, target_size=(224, 224), grayscale=Tru
         img = img.convert('L')
     
     img = img.resize(target_size, Image.Resampling.LANCZOS)
-    img_array = image.img_to_array(img)
+    img_array = np.array(img)
     
     if grayscale:
         img_array = np.expand_dims(img_array, axis=-1)

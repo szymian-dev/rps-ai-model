@@ -4,6 +4,9 @@ dataset_grayscale/
 .pyc
 models/
 models_grayscale/
+dataset_mediapipe/
+models_mediapipe/
+src_data_mediapipe/
 
 
 # Byte-compiled / optimized / DLL files
