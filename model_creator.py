@@ -39,7 +39,7 @@ def build_regularized_cnn_l2_0001(input_shape=(224, 224, 3), num_classes=3):
     model.add(layers.Dense(num_classes, activation='softmax'))
     return model
 
-def build_ResNet50(input_shape=(224, 224, 3), num_classes=3):
+def build_ResNet50(input_shape=(224, 224, 3), num_classes=3, with_base_model=False):
     base_model = tf.keras.applications.ResNet50(include_top=False, weights='imagenet', input_shape=input_shape)
     base_model.trainable = False
     
@@ -49,6 +49,8 @@ def build_ResNet50(input_shape=(224, 224, 3), num_classes=3):
     model.add(layers.GlobalAveragePooling2D())
     model.add(layers.Dense(num_classes, activation='softmax'))
     
+    if with_base_model:
+        return model, base_model
     return model
 
 def build_cnn_medium(input_shape=(224, 224, 3), num_classes=3):
