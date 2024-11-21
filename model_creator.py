@@ -47,7 +47,6 @@ def build_ResNet50(input_shape=(224, 224, 3), num_classes=3):
     model.add(base_model)
     
     model.add(layers.GlobalAveragePooling2D())
-    model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(num_classes, activation='softmax'))
     
     return model
