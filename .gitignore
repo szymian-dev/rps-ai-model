@@ -6,7 +6,10 @@ models/
 models_grayscale/
 dataset_mediapipe/
 models_mediapipe/
+models_resnet/
 src_data_mediapipe/
+src_data_unet/
+src_data_unet_random/
 
 
 # Byte-compiled / optimized / DLL files
