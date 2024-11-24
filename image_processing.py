@@ -45,6 +45,21 @@ def random_color_and_grayscale_augmentation(image):
         augmented_image = augmented_image.astype(np.float32)
         return augmented_image
     
+def random_color_augmentation(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+    hue_shift = np.random.uniform(-10, 10) 
+    saturation_scale = np.random.uniform(0.9, 1.1) 
+    value_scale = np.random.uniform(0.9, 1.1)
+
+    hsv[:, :, 0] = np.clip(hsv[:, :, 0] + hue_shift, 0, 179)
+    hsv[:, :, 1] = np.clip(hsv[:, :, 1] * saturation_scale, 0, 255)
+    hsv[:, :, 2] = np.clip(hsv[:, :, 2] * value_scale, 0, 255)
+
+    augmented_image = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+    augmented_image = augmented_image.astype(np.float32)
+
+    return augmented_image
+    
     
 def convert_images_to_grayscale(dataset_dir, splits, classes):
     """

@@ -12,6 +12,8 @@ src_data_unet/
 src_data_unet_random/
 ds_supervisely/
 processed_masks/
+dataset_rgb_128/
+models_rgb_128/
 
 
 # Byte-compiled / optimized / DLL files
