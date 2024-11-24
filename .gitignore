@@ -11,6 +11,7 @@ src_data_mediapipe/
 src_data_unet/
 src_data_unet_random/
 ds_supervisely/
+processed_masks/
 
 
 # Byte-compiled / optimized / DLL files
