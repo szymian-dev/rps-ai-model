@@ -14,6 +14,8 @@ ds_supervisely/
 processed_masks/
 dataset_rgb_128/
 models_rgb_128/
+models_segmentation/
+segmented_data/
 
 
 # Byte-compiled / optimized / DLL files
