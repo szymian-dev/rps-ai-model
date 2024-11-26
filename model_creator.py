@@ -187,3 +187,22 @@ def build_unet_model(input_shape=(224, 224, 3)):
     outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(u1)
     
     return models.Model(inputs=[inputs], outputs=[outputs])
+
+def build_large_unet_model(input_shape=(224, 224, 3)):
+    inputs = layers.Input(input_shape)
+    
+    s1, d1 = downsample_block(inputs, 32, dropout=0.1)
+    s2, d2 = downsample_block(d1, 64, batch_norm=True)
+    s3, d3 = downsample_block(d2, 128, dropout=0.1)
+    s4, d4 = downsample_block(d3, 256, batch_norm=True)
+    
+    bottleneck = double_conv_layer(d4, 512)
+    
+    u4 = upsampling_block(bottleneck, s4, 256, batch_norm=True)
+    u3 = upsampling_block(u4, s3, 128, dropout=0.1)
+    u2 = upsampling_block(u3, s2, 64, batch_norm=True)
+    u1 = upsampling_block(u2, s1, 32, dropout=0.1)
+    
+    outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(u1)
+    
+    return models.Model(inputs=[inputs], outputs=[outputs])
