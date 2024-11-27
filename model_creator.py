@@ -206,3 +206,28 @@ def build_large_unet_model(input_shape=(224, 224, 3)):
     outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(u1)
     
     return models.Model(inputs=[inputs], outputs=[outputs])
+
+def build_cnn_unet_classifier(input_shape=(128, 128, 1), num_classes=3):
+    model = models.Sequential()
+    model.add(layers.InputLayer(input_shape=input_shape))
+
+    model.add(layers.Conv2D(16, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D((2, 2)))
+    
+    model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D((2, 2)))
+    
+    model.add(layers.Conv2D(64, (3, 3), activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D((2, 2)))
+    
+    model.add(layers.Flatten())
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dropout(0.3))
+    
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(num_classes, activation='softmax'))
+    
+    return model
