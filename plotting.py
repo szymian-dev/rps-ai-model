@@ -67,7 +67,7 @@ def plot_accuracy_and_loss(history):
     axs[1].legend(['Train', 'Validation'])
     plt.show()
     
-def plot_history_csv(csv_file):
+def plot_history_csv(csv_file, title=None):
     history = pd.read_csv(csv_file)
     
     required_columns = ['acc', 'val_acc', 'loss', 'val_loss']
@@ -83,8 +83,10 @@ def plot_history_csv(csv_file):
     assert len(loss) == len(acc) == len(val_loss) == len(val_acc)
 
     plt.clf()
-    epochs = range(len(loss))
+    epochs = range(1, len(loss) + 1)
     fig, axs = plt.subplots(2, 1, figsize=(25, 10)) 
+    
+
     axs[0].plot(epochs, acc, 'bo--', label='Training accuracy')
     axs[0].plot(epochs, val_acc, 'b-', label='Validation accuracy')
     axs[0].set_title('Training and Validation Accuracy')
@@ -98,6 +100,9 @@ def plot_history_csv(csv_file):
     axs[1].set_xlabel('Epochs')
     axs[1].set_ylabel('Loss')
     axs[1].legend(['Train', 'Validation'])
+    
+    if title:
+        plt.suptitle(title)
     plt.show()
         
         

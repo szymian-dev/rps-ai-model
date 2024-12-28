@@ -20,6 +20,8 @@ segmented_data_large/
 segmented_data_large_model/
 dataset_unet_classifiers/
 models_unet_classifiers/
+final_test/
+dataset_grayscale_128/
 
 
 # Byte-compiled / optimized / DLL files
